@@ -1,0 +1,12 @@
+<h2 class="ml-3">New-project</h2>
+<form action="create" method="POST" class="ml-3 mr-3">
+    <div class="form-group">
+        <label for="projectName">Project name</label>
+        <input type="text" class="form-control" id="projectName" name='projectName' placeholder="Enter project name"
+            value="<% project.projectName %>">
+    </div>
+    <a class="btn btn-danger" href="/projects">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <br>
+    <%- include ('../partials/errorMessage.ejs')  %> 
+</form>

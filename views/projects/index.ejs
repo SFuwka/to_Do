@@ -1,0 +1,10 @@
+projects
+<br>
+<a class="btn btn-success" href="projects/new">New project</a>
+<% projects.forEach(project => { %>
+ <div class="card">
+     <div class="card-body">
+         <%= project.name %> 
+     </div>
+ </div>
+<% }) %>
