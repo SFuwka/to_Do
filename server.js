@@ -5,9 +5,11 @@ const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const morgan = require('morgan');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const favicon = require('serve-favicon');
+const path = require('path')
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3004;
 
 
 
@@ -19,6 +21,7 @@ app.set('views', __dirname + '/views');
 app.set('layout', 'layouts/layout');
 app.use(expressLayouts)
 app.use(express.static('public'));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(bodyParser.urlencoded({extended: false}));
 
 const mongoose = require('mongoose');
