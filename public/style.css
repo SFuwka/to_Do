@@ -2,7 +2,28 @@ h1 {
     margin-top: 60px;
 }
 
-#newProjectButton{
+#newProjectButton {
     min-width: 8em;
     max-height: 2.3em;
+}
+
+.projectLink:hover {
+    text-decoration: none;
+    color:#fff;
+}
+
+.projectLink {
+    color: #000;
+}
+
+.alert-secondary:hover {
+    background-color: #b0b1b2;
+}
+
+.error404{
+    max-height: 100vh;
+}
+
+.container404{
+    background-color: black;
 }

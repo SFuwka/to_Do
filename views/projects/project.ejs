@@ -1,0 +1,29 @@
+<h1 class="text-center"><%= project.name %></h1>
+<form action="/projects/<%= project.id %>/tasks" method="POST" class="ml-3 mr-3 mb-3">
+    <div class="form-group">
+        <label for="task">Task</label>
+        <input type="text" class="form-control" id="task" name='task' placeholder="Enter task to do">
+    </div>
+    <a class="btn btn-danger" href="/projects/<%= project.id %>">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <br>
+    <%- include ('../partials/errorMessage.ejs')  %>
+</form>
+
+<p class="card-text"> <%=tasksCount.completed%> out of <%=tasksCount.all%> completed</p>
+
+<% if (locals.tasks) { %>
+    <% let className = ""  %>
+    <% tasks.forEach(task => { %> 
+        <% if (task.completed) { %> 
+            <% className = "alert alert-success" %> 
+        <% } else{ %>
+            <% className = "alert alert-danger" %> 
+        <% } %>
+        <div class="card">
+            <div class="card-body <%= className %>">
+                <p class="card-text"><%= task.name %></p>
+            </div>
+        </div>
+    <% }) %>
+<% } %>

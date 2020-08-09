@@ -4,17 +4,22 @@
     <div class="row justify-content-between">
         <a id="newProjectButton" class="btn btn-success my-2 ml-3" href="projects/new">New project</a>
         <form action="/projects" method="GET" class="form-inline">
-            <input class="form-control col-7 ml-3" type="text" name="projectName" placeholder="Search" aria-label="Search">
+            <input class="form-control col-7 ml-3" type="text" name="projectName" placeholder="Search"
+                aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
 </div>
 
 <% projects.forEach(project => { %>
-<div class="card">
+<div class="card alert alert-dark">
     <div class="card-body">
-        <h5 class="card-title"><%= project.name %></h5>
-        <p class="card-text font-weight-light"> <%= project.creationDate %> </p>
+        <div class="alert alert-secondary">
+            <a class="projectLink" href="/projects/<%= project.id %>">
+                <h5 class="card-title"><%= project.name %></h5>
+                <p class="card-text font-weight-light"> <%= project.creationDate %> </p>
+            </a>
+        </div>
         <button projectId="<%= project.id %>" class="btn btn-danger">Delete</button>
     </div>
 </div>
