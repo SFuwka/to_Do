@@ -17,10 +17,62 @@
         <div class="alert alert-secondary">
             <a class="projectLink" href="/projects/<%= project.id %>">
                 <h5 class="card-title"><%= project.name %></h5>
-                <p class="card-text font-weight-light"> <%= project.creationDate %> </p>
+                <p class="card-text font-weight-light"> <%= project.lastModified.toString().slice(0,project.lastModified.toString().indexOf('GMT')) %> </p>
             </a>
         </div>
-        <button projectId="<%= project.id %>" class="btn btn-danger">Delete</button>
+        <form method="POST" action="projects/<%= project.id %>?_method=DELETE">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" projectid=<%= project.id%> onclick="openEditForm(this)" class="btn btn-secondary">
+                <img src="/images/editiconW.svg" width="25px" alt="pencile">
+            </button>
+        </form>
     </div>
 </div>
 <% }) %>
+
+
+<script>
+    function openEditForm(elem) {
+        const pId = elem.getAttribute('projectid')
+        const inputForm = createInputForm(pId);
+        const card = elem.closest('.card')
+        const cardBody = elem.closest('.card-body')
+        card.replaceChild(inputForm, cardBody)
+        inputForm.querySelector('input').focus()
+    }
+
+    function setAttributes(el, attrs) {
+        for (var key in attrs) {
+            el.setAttribute(key, attrs[key]);
+        }
+    }
+
+    function createInputForm(pId) {
+        const div = document.createElement('div')
+        setAttributes(div, { class: 'card-body' })
+
+        const form = document.createElement('form')
+        setAttributes(form, { action: `projects/${pId}/?_method=PUT`, method: 'POST' })
+
+        const input = document.createElement('input')
+        setAttributes(input, { type: 'text', class: 'form-control mb-3', name: 'projectName' })
+
+        const cancelButton = document.createElement('button')
+        cancelButton.innerHTML = 'Cancel'
+        setAttributes(cancelButton, { type: 'button', class: 'btn btn-danger ml-1' })
+        cancelButton.addEventListener('click', () => {
+            location.reload();
+        })
+
+        const submitButton = document.createElement('button')
+        submitButton.innerHTML = 'Edit'
+        setAttributes(submitButton, { type: 'submit', class: 'btn btn-success ml-3' })
+
+        div.appendChild(form)
+        form.appendChild(input)
+        form.appendChild(submitButton)
+        form.appendChild(cancelButton)
+        return div
+    }
+
+</script>

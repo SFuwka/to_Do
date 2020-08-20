@@ -1,20 +1,23 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         required: true
     },
-    completed:{
-        type: Boolean,
-        default:false
+    subtask: {
+        type: Object
     },
-    project:{
+    completed: {
+        type: Boolean,
+        default: false
+    },
+    project: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Project'
     },
-    creationDate:{
+    creationDate: {
         type: Date,
         default: Date.now
     }

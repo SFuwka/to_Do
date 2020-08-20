@@ -2,28 +2,67 @@
 <form action="/projects/<%= project.id %>/tasks" method="POST" class="ml-3 mr-3 mb-3">
     <div class="form-group">
         <label for="task">Task</label>
-        <input type="text" class="form-control" id="task" name='task' placeholder="Enter task to do">
+        <input type="text" class="form-control" name='task' placeholder="Enter task to do">
     </div>
-    <a class="btn btn-danger" href="/projects/<%= project.id %>">Cancel</a>
+    <a class="btn btn-danger" href="/projects">Return</a>
     <button type="submit" class="btn btn-primary">Create</button>
     <br>
     <%- include ('../partials/errorMessage.ejs')  %>
 </form>
-
-<p class="card-text"> <%=tasksCount.completed%> out of <%=tasksCount.all%> completed</p>
-
-<% if (locals.tasks) { %>
-    <% let className = ""  %>
-    <% tasks.forEach(task => { %> 
-        <% if (task.completed) { %> 
-            <% className = "alert alert-success" %> 
-        <% } else{ %>
-            <% className = "alert alert-danger" %> 
+<% if (locals.tasksCount) { %>
+        <p id="task-count"><%=tasksCount.completed%> out of <%=tasksCount.all%> completed</p>    
+    <% } %>
+ 
+<form action="" method="post">
+    <ul class="list-group">
+        <% if (locals.tasks) { %>
+            <% let className = ""  %>
+            <% tasks.forEach(task => { %>
+                <% if (task.completed) { %>
+                    <% className = "list-group-item-success" %>
+                <% } else{ %>
+                    <% className = "list-group-item-danger" %>
+                <% } %>
+        <li class="list-group-item <%= className %> task" taskId = <%= task.id %>> 
+            <p class="card-text"><%= task.name %></p>
+        </li>
+            <% }) %>
         <% } %>
-        <div class="card">
-            <div class="card-body <%= className %>">
-                <p class="card-text"><%= task.name %></p>
-            </div>
-        </div>
-    <% }) %>
-<% } %>
+    </ul>
+</form>
+
+<script>
+    let tasksCountDom = document.querySelector('#task-count')
+    const originalDomTasksCount = tasksCountDom.innerHTML
+    let completedTasksCount = Number(tasksCountDom.innerHTML[0]) 
+    let tasks = document.querySelectorAll('.task')
+    let submitButton = document.createElement('button')
+    let stateChanged = false
+    tasks.forEach(task =>{
+        task.addEventListener('click',function (){
+            changeCompletedState(task)
+            console.log(task) // CONSOLE LOG
+            let newTaskCountString = completedTasksCount + originalDomTasksCount.substring(1,originalDomTasksCount.length)
+            tasksCountDom.innerHTML = newTaskCountString
+        })
+    })
+
+    function changeCompletedState(elem){
+        let elemClassCompleted = elem.className.split(' ')[1]
+        let elemFullClass = elem.className
+        if(elemClassCompleted === 'list-group-item-success'){
+            elem.className = elemFullClass.replace(elemClassCompleted,'list-group-item-danger')
+            completedTasksCount--
+        } else{
+            elem.className = elemFullClass.replace(elemClassCompleted,'list-group-item-success')
+            completedTasksCount++
+        }
+        checkState()
+    }
+
+    function checkState(tasksCount){
+       console.log('checking state')
+    }
+
+</script>
+

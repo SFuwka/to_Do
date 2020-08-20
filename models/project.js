@@ -9,7 +9,7 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    creationDate:{
+    lastModified:{
         type: Date
     }
 });

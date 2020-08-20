@@ -34,6 +34,7 @@ router.get('/:id', async (req, res, next) => {
         let completedTasks = tasks.filter((task) => {
             return task.completed
         })
+        console.log(tasks)
         tasksCount.completed = completedTasks.length
         tasksCount.all = tasks.length
         res.render('projects/project', { title: req.project.name, project: req.project, tasks: tasks, tasksCount: tasksCount })
@@ -49,7 +50,7 @@ router.get('/', async (req, res, next) => {
         searchOptions.name = new RegExp(req.query.projectName, 'i')
     }
     try {
-        const projects = await Project.find(searchOptions).sort({ creationDate: -1 })
+        const projects = await Project.find(searchOptions).sort({ lastModified: -1 })
         res.render('projects/index', { title: 'TO-DO projects', projects: projects, searchOptions: req.query })
     } catch (error) {
         console.log(error)
@@ -62,11 +63,11 @@ router.post('/create', async (req, res, next) => {
     const project = new Project({
         name: req.body.projectName,
         userId: 'TEMP', // temprorary foreign key
-        creationDate: Date.now()
+        lastModified: Date.now()
     });
     try {
         const newProject = await project.save();
-        res.redirect('/projects')
+        res.status(201).redirect('/projects')
     } catch (error) {
         console.log(error)
         res.render('./projects/new', {
@@ -76,8 +77,24 @@ router.post('/create', async (req, res, next) => {
     }
 })
 
-router.delete('/:id', (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
 
+    try {
+        await Project.updateOne({ _id: req.project.id }, { $set: { name: req.body.projectName }, $currentDate: { lastModified: true } })
+        res.status(201).redirect('/projects')
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+        await Project.deleteOne({ _id: req.project.id })
+        await Task.deleteMany({ project: req.project.id })
+        res.status(204).redirect('/projects')
+    } catch (error) {
+        next(error)
+    }
 })
 
 module.exports = router;

@@ -9,21 +9,28 @@ h1 {
 
 .projectLink:hover {
     text-decoration: none;
-    color:#fff;
+    color: #fff;
 }
 
 .projectLink {
     color: #000;
 }
 
+.task:hover{
+    filter: brightness(85%);
+}
+
 .alert-secondary:hover {
     background-color: #b0b1b2;
 }
 
-.error404{
+.error404 {
     max-height: 100vh;
 }
 
-.container404{
+.container404 {
+    left: 0;
+    width: 100vw;
+    position: absolute;
     background-color: black;
 }
