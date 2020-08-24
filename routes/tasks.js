@@ -3,7 +3,6 @@ const router = express.Router({ mergeParams: true })
 const Task = require('../models/Task');
 
 router.get('/:id', (req, res, next) => {
-    console.log(req.query)
     res.send(req.task)
 })
 
@@ -29,8 +28,16 @@ router.post('/', async (req, res, next) => {
     }
 })
 
-router.put('/:id', (req, res, next) => {
-    
+router.put('/', (req, res, next) => {
+    req.body.forEach(async function (task) {
+        try {
+            await Task.updateOne({ _id: task.taskId }, { $set: { completed: !task.completed } })
+        } catch (error) {
+            next(error)
+        }
+    });
+    console.log(req.project.id)
+    res.sendStatus(204)
 })
 
 router.delete('/:id', (req, res, next) => {

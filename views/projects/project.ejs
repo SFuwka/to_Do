@@ -10,59 +10,101 @@
     <%- include ('../partials/errorMessage.ejs')  %>
 </form>
 <% if (locals.tasksCount) { %>
-        <p id="task-count"><%=tasksCount.completed%> out of <%=tasksCount.all%> completed</p>    
-    <% } %>
- 
-<form action="" method="post">
+<p id="task-count"><%=tasksCount.completed%> out of <%=tasksCount.all%> completed</p>
+<% } %>
+
+<div id="tasksForm">
     <ul class="list-group">
         <% if (locals.tasks) { %>
-            <% let className = ""  %>
-            <% tasks.forEach(task => { %>
-                <% if (task.completed) { %>
-                    <% className = "list-group-item-success" %>
-                <% } else{ %>
-                    <% className = "list-group-item-danger" %>
-                <% } %>
-        <li class="list-group-item <%= className %> task" taskId = <%= task.id %>> 
+        <% let className = ""  %>
+        <% tasks.forEach(task => { %>
+        <% if (task.completed) { %>
+        <% className = "list-group-item-success" %>
+        <% } else{ %>
+        <% className = "list-group-item-danger" %>
+        <% } %>
+        <li class="list-group-item <%= className %> task" taskid=<%= task.id %>>
             <p class="card-text"><%= task.name %></p>
         </li>
-            <% }) %>
+        <% }) %>
         <% } %>
     </ul>
-</form>
+    <button hidden id="submitButton" type="button" class="btn btn-success mt-3"
+        onclick="sendReq('<%= project.id%>')">Save changes</button>
+</div>
 
 <script>
     let tasksCountDom = document.querySelector('#task-count')
     const originalDomTasksCount = tasksCountDom.innerHTML
-    let completedTasksCount = Number(tasksCountDom.innerHTML[0]) 
+    let completedTasksCount = Number(tasksCountDom.innerHTML[0])
+
+    const tasksForm = document.querySelector('#tasksForm')
     let tasks = document.querySelectorAll('.task')
-    let submitButton = document.createElement('button')
-    let stateChanged = false
-    tasks.forEach(task =>{
-        task.addEventListener('click',function (){
+
+    let submitButton = document.getElementById('submitButton')
+
+    const serverState = []
+
+    tasks.forEach(task => {
+        taskId = task.getAttribute('taskid')
+        serverState.push({ taskId: taskId, completed: task.classList[1] === 'list-group-item-danger' ? false : true, isChanged: false })
+        task.addEventListener('click', function () {
             changeCompletedState(task)
-            console.log(task) // CONSOLE LOG
-            let newTaskCountString = completedTasksCount + originalDomTasksCount.substring(1,originalDomTasksCount.length)
+            let newTaskCountString = completedTasksCount + originalDomTasksCount.substring(1, originalDomTasksCount.length)
             tasksCountDom.innerHTML = newTaskCountString
+            if (serverState.indexOfObject('isChanged', true) !== -1) {
+                submitButton.removeAttribute('hidden')
+            } else {
+                submitButton.hidden = true
+            }
         })
     })
 
-    function changeCompletedState(elem){
+    function changeCompletedState(elem) {
         let elemClassCompleted = elem.className.split(' ')[1]
         let elemFullClass = elem.className
-        if(elemClassCompleted === 'list-group-item-success'){
-            elem.className = elemFullClass.replace(elemClassCompleted,'list-group-item-danger')
+        let clickedElem = getClicked(elem)
+
+        if (elemClassCompleted === 'list-group-item-success') {
+            elem.className = elemFullClass.replace(elemClassCompleted, 'list-group-item-danger')
             completedTasksCount--
-        } else{
-            elem.className = elemFullClass.replace(elemClassCompleted,'list-group-item-success')
+        } else {
+            elem.className = elemFullClass.replace(elemClassCompleted, 'list-group-item-success')
             completedTasksCount++
         }
-        checkState()
+        toggleIsChanged()
+
+        function toggleIsChanged() {
+            if (clickedElem.isChanged === false) {
+                clickedElem.isChanged = true
+            } else {
+                clickedElem.isChanged = false
+            }
+        }
     }
 
-    function checkState(tasksCount){
-       console.log('checking state')
+    function getClicked(elem) {
+        return serverState[serverState.indexOfObject("taskId", elem.getAttribute('taskid'))]
+    }
+
+    async function sendReq(id) {
+
+        const url = `/projects/${id}/tasks`
+        let data = JSON.stringify(serverState.filter((task) => {
+            return task.isChanged
+        }))
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            location.reload();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 </script>
-

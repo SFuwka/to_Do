@@ -23,7 +23,7 @@
         <form method="POST" action="projects/<%= project.id %>?_method=DELETE">
             <button type="submit" class="btn btn-danger">Delete</button>
             <button type="button" projectid=<%= project.id%> onclick="openEditForm(this)" class="btn btn-secondary">
-                <img src="/images/editiconW.svg" width="25px" alt="pencile">
+                <img src="/images/editiconW.svg" width="25px" alt="Edit">
             </button>
         </form>
     </div>
@@ -41,11 +41,7 @@
         inputForm.querySelector('input').focus()
     }
 
-    function setAttributes(el, attrs) {
-        for (var key in attrs) {
-            el.setAttribute(key, attrs[key]);
-        }
-    }
+    
 
     function createInputForm(pId) {
         const div = document.createElement('div')

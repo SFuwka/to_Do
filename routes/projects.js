@@ -34,7 +34,6 @@ router.get('/:id', async (req, res, next) => {
         let completedTasks = tasks.filter((task) => {
             return task.completed
         })
-        console.log(tasks)
         tasksCount.completed = completedTasks.length
         tasksCount.all = tasks.length
         res.render('projects/project', { title: req.project.name, project: req.project, tasks: tasks, tasksCount: tasksCount })
@@ -78,7 +77,6 @@ router.post('/create', async (req, res, next) => {
 })
 
 router.put('/:id', async (req, res, next) => {
-
     try {
         await Project.updateOne({ _id: req.project.id }, { $set: { name: req.body.projectName }, $currentDate: { lastModified: true } })
         res.status(201).redirect('/projects')

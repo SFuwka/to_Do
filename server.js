@@ -25,6 +25,7 @@ app.use(expressLayouts)
 app.use(express.static('public'));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json())
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true });
